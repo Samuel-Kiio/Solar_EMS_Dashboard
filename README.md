@@ -17,8 +17,11 @@ The project demonstrates how data-driven energy management can increase **solar 
 ## Project Objectives
 
 i.) To Forecast next-day solar energy production using **machine learning (XGBoost)** and meteorological data.
+
 ii.) To Optimize scheduling of **controllable campus loads** to coincide with peak solar availability.
+
 iii.) To improve on-site **solar PV self-consumption** and reduce energy export to the grid.
+
 iv.) To provide a **user-friendly dashboard** for operational decision-making.
 
 
@@ -46,7 +49,9 @@ The EMS consists of four main components:
 * It Enforces realistic operational constraints, including:
 
   i.) Daylight-only operation (06:00–18:00)
+  
   ii.) Contiguous runtime for appliances
+
   iii.) Device-specific time windows for example ovens finishing before midday.
 * The algorithim is designed for **transparency, low computational cost, and practical deployment**
 
