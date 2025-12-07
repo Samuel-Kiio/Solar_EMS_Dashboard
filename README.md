@@ -79,6 +79,7 @@ The EMS consists of four main components:
 
 <img width="940" height="449" alt="image" src="https://github.com/user-attachments/assets/9ea18b97-76f6-4ddf-b524-bda6f6fa0eb8" />
 
+<img width="986" height="391" alt="image" src="https://github.com/user-attachments/assets/a55008f0-c33b-4036-9703-45eebe407d28" />
 
 * Accurate day-ahead solar energy forecasts (R² ≈ 0.92)
 * Successful alignment of controllable loads with solar generation peaks
