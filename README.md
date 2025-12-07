@@ -79,13 +79,14 @@ The EMS consists of four main components:
 
 <img width="940" height="449" alt="image" src="https://github.com/user-attachments/assets/9ea18b97-76f6-4ddf-b524-bda6f6fa0eb8" />
 
+* Accurate day-ahead solar energy forecasts with an R² score of 0.92.
+* Successful alignment of controllable loads with solar generation peaks.
+* Reduced mismatch between PV production and campus demand.
+* A fully functional, code-complete EMS pipeline ready for real-world extension.
+
+## The scheduler was as shown below:
+
 <img width="986" height="391" alt="image" src="https://github.com/user-attachments/assets/a55008f0-c33b-4036-9703-45eebe407d28" />
-
-* Accurate day-ahead solar energy forecasts (R² ≈ 0.92)
-* Successful alignment of controllable loads with solar generation peaks
-* Reduced mismatch between PV production and campus demand
-* A fully functional, code-complete EMS pipeline ready for real-world extension
-
 
 ##  Potential Extensions
 
