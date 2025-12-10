@@ -1,5 +1,5 @@
-import requests
 import pandas as pd
+import requests
 from datetime import datetime, timedelta
 import os
 
@@ -37,7 +37,7 @@ def fetch_forecast(lat=-1.2921, lon=36.8219, save_path="data/tomorrow_irradiance
     print(f"Forecast saved to: {save_path}")
     return df
 
-# Testing block
+# Testing the block
 if __name__ == "__main__":
     fetch_forecast()
 

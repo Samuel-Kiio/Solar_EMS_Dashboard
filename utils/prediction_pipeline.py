@@ -24,8 +24,8 @@ def fetch_openmeteo_forecast(lat, lon):
     r.raise_for_status()
     data = r.json()
 
-    ts = pd.to_datetime(data["hourly"]["time"])                  # strings in local clock
-    ts = ts.tz_localize(NBO_TZ)                                  # mark as Nairobi (no shift)
+    ts = pd.to_datetime(data["hourly"]["time"])      # tz-naive timestamps
+    ts = ts.tz_localize(NBO_TZ)                      # localizing to Nairobi time. Key step. Do NOT convert from UTC.
 
     df = pd.DataFrame({
         "timestamp": ts,
@@ -41,17 +41,17 @@ def clean_forecast_data(df: pd.DataFrame) -> pd.DataFrame:
     """
     df = df.sort_values("timestamp").copy()
 
-    # Mild smoothing (centered so it doesn't shift peaks)
+    # Smoothing any tiny spikes in GTI. Uses a 3-point rolling mean. Nice for how the visuals look. Not too important.
     df["Global Tilted Irradiation"] = (
         df["Global Tilted Irradiation"]
         .rolling(window=3, center=True, min_periods=1)
         .mean()
     )
 
-    # Fill tiny gaps in temperature
+    # Filling tiny gaps in temperature. Linear interpolating, then backfilling or frontfilling any edge NaNs.
     df["air_temp"] = df["air_temp"].interpolate().bfill().ffill()
 
-    # Feature engineering (using Nairobi local time)
+    # Adding time-based features
     df["hour"] = df["timestamp"].dt.hour
     df["dayofyear"] = df["timestamp"].dt.dayofyear
     return df
@@ -77,5 +77,5 @@ def predict_next_day_production(lat, lon):
     feats_scaled = scaler.transform(feats)
 
     forecast["predicted_solar_production"] = model.predict(feats_scaled)
-    # Only the columns the app uses
+    # Only returning key columns. Minor key step.
     return forecast[["timestamp", "Global Tilted Irradiation", "predicted_solar_production"]]
