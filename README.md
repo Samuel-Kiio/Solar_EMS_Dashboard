@@ -1,107 +1,115 @@
-# Energy Management System for Solar - Optimized Load Scheduling
+Energy Management System for Solar-Optimised Load Scheduling
+<p align="center"> <img src="https://github.com/user-attachments/assets/f8e3a1ff-d47b-40b0-8473-10a486394058" alt="EMS" width="400"> </p>
+Overview
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/f8e3a1ff-d47b-40b0-8473-10a486394058" alt="EMS" width="400">
-</p>
+This repository presents an Energy Management System (EMS) developed for a university campus in Kenya to support data-driven monitoring, forecasting, and operational decision-making for on-site solar photovoltaic (PV) systems.
 
-## Overview
+The system integrates a machine-learning-based solar energy forecasting model with a rule-based load scheduling algorithm to support forward-looking analysis, performance oversight, and optimisation of controllable electrical loads.
+An interactive Streamlit dashboard provides transparent visualisation of forecasts, projected energy production, and optimised load schedules.
 
-This repository hosts a **smart Energy Management System (EMS)** developed for a **university campus in Kenya** to improve on-site solar energy utilization through **day-ahead solar forecasting and intelligent load scheduling**.
+The project demonstrates how predictive analytics and supervisory-style dashboards can be applied to improve resource utilisation, enhance operational visibility, and support evidence-based management decisions within regulated infrastructure environments.
 
-The system integrates a **machine learning–based solar energy prediction model** with a **heuristic load scheduling algorithm** to align controllable electrical loads with periods of high solar photovoltaic (PV) generation. 
-An interactive **Streamlit web dashboard** is used to visualize forecasts, energy production, and optimized load schedules.
+Project Objectives
 
-The project demonstrates how data-driven energy management can increase **solar self-consumption**, reduce dependency on grid electricity, and support institutional sustainability goals.
+i.) To develop a next-day solar energy forecasting model using machine learning and meteorological data to support proactive monitoring.
 
+ii.) To design an analytical load scheduling approach that aligns controllable demand with forecasted solar availability.
 
-## Project Objectives
+iii.) To improve solar PV self-consumption performance and reduce unplanned export to the grid.
 
-i.) To Forecast next-day solar energy production using **machine learning (XGBoost)** and meteorological data.
+iv.) To provide a transparent, user-friendly dashboard to support operational oversight and decision-making.
 
-ii.) To Optimize scheduling of **controllable campus loads** to coincide with peak solar availability.
+System Architecture
 
-iii.) To improve on-site **solar PV self-consumption** and reduce energy export to the grid.
+The EMS is structured around four core analytical components:
 
-iv.) To provide a **user-friendly dashboard** for operational decision-making.
+1. Solar Forecasting Module
 
+Utilises an XGBoost-based predictive model to estimate next-day solar PV energy production.
 
-## System Architecture
+Trained on historical irradiance, weather variables, and PV output data.
 
-The EMS consists of four main components:
+Meteorological forecast inputs are obtained via the Open-Meteo API.
 
-### 1. A Solar Forecasting Module
+Produces 30-minute resolution forecasts over a 24-hour horizon to support short-term planning and monitoring.
 
-* This module uses **XGBoost model** to predict next-day PV energy production.
-* It is trained on historical irradiance, weather, and PV output data.
-* The meteorological inputs are sourced via the **Open-Meteo API**.
-* The module outputs **30-minute resolution forecasts** for 24 hours ahead.
+2. Load Modelling
 
-### 2. Load Modelling
+Campus electrical demand is categorised into:
 
-* Campus electrical demand were split into:
+Base load (non-deferrable): lighting, ICT infrastructure, and essential services.
 
-  1.  **Base load** (non-deferrable: lighting, ICT, essential services)
-  2.  **Controllable loads** These include deferrable appliances such as laundry machines, dryers, dishwashers, ovens, water heaters, and ventilation.
+Controllable loads (deferrable): including laundry machines, dryers, dishwashers, ovens, water heaters, and ventilation systems.
 
-### 3. Load Scheduling Algorithm
+This classification supports structured analysis of demand flexibility and controllability.
 
-* A **heuristic-based scheduler** prioritizes running controllable loads during periods of high forecasted solar production.
-* It Enforces realistic operational constraints, including:
+3. Load Scheduling Algorithm
 
-  i.) Daylight-only operation (06:00–18:00)
-  
-  ii.) Contiguous runtime for appliances
+A heuristic, rule-based scheduling algorithm aligns controllable loads with periods of high forecasted solar generation.
 
-  iii.) Device-specific time windows for example ovens finishing before midday.
-* The algorithim is designed for **transparency, low computational cost, and practical deployment**
+The scheduler enforces realistic operational constraints, including:
 
-### 4. A Simple Streamlit Dashboard
+i.) Daylight operating windows (06:00–18:00)
+ii.) Contiguous runtime requirements
+iii.) Device-specific scheduling rules (e.g., ovens completing operation before midday)
 
-* This dashboard Visualizes:
+The algorithm is intentionally designed for transparency, interpretability, and low computational complexity, supporting auditability and practical deployment.
 
-  1.  Next-day irradiance forecast.
-  2.  Predicted solar energy production.
-  3.  Optimized load schedule in a Gantt-style timeline.
-* This dashboard could enable energy managers to understand and anticipate energy flows before the operating day
+4. Streamlit Analytics Dashboard
 
+The dashboard provides visualisation of:
 
-##  Technologies Used
+Next-day irradiance forecasts
 
-1.  **Python**
-2.  **XGBoost** machine learning model.
-3.  **Pandas & NumPy** for data processing.
-4.  **Streamlit** for a simple web dashboard.
-5.  **Plotly** for interactive visualizations.
-6.  **Open-Meteo API** to access weather & irradiance forecasts.
+Predicted solar energy production
 
+Optimised load schedules presented in a timeline (Gantt-style) format
 
-##  Results from the Project
+The interface supports forward-looking oversight, enabling energy managers to anticipate system behaviour and assess operational decisions prior to execution.
 
+Technologies Used
+
+Python
+
+XGBoost for predictive modelling
+
+Pandas & NumPy for data processing and validation
+
+Streamlit for analytics dashboard development
+
+Plotly for interactive visualisation
+
+Open-Meteo API for meteorological forecast data
+
+Results
 <img width="940" height="449" alt="image" src="https://github.com/user-attachments/assets/9ea18b97-76f6-4ddf-b524-bda6f6fa0eb8" />
 
-1. An accurate day-ahead solar energy forecasts with an R² score of 0.92.
-2. The successful alignment of controllable loads with solar generation peaks.
-3. A reduction in the mismatch between PV production and campus demand.
-4. A fully functional, code-complete EMS pipeline ready for real-world extension.
+Key outcomes from the project include:
 
-## The scheduler was as shown below:
+High-accuracy day-ahead solar energy forecasts (R² ≈ 0.92).
 
+Effective alignment of controllable demand with forecasted solar generation peaks.
+
+Reduced mismatch between PV production and campus electricity demand.
+
+A complete, modular EMS pipeline suitable for extension and operational scaling.
+
+Example Load Scheduling Output
 <img width="986" height="391" alt="image" src="https://github.com/user-attachments/assets/a55008f0-c33b-4036-9703-45eebe407d28" />
+Potential Extensions
 
-##  Potential Extensions
+Integration with smart meters, PLCs, or IoT-based switching systems for automated control
 
-* Integration with **smart meters, PLCs, or IoT switches** for automatic load control
-* Real-time EMS operation with continuous forecast updates
-* Economic optimization incorporating energy tariffs and demand charges
-* Scaling to multi-building or multi-campus microgrids
+Transition to real-time or near-real-time monitoring with rolling forecast updates
 
+Incorporation of economic and tariff-based optimisation criteria
 
-## The Repository Structure 
+Extension to multi-building or campus-scale microgrid supervision
 
-```bash
-├── app.py                     
+Repository Structure
+├── app.py
 ├── models/
-│   └── xgb_model.pkl          
+│   └── xgb_model.pkl
 ├── utils/
 │   ├── fetch_openmeteo_forecast.py
 │   ├── prediction_pipeline.py
@@ -110,16 +118,12 @@ The EMS consists of four main components:
 │   └── load_data.csv
 ├── requirements.txt
 └── README.md
-```
 
-##  Author
+Author
 
-**Samuel Kiio Kyalo**
-
+Samuel Kiio Kyalo
 Graduate Electrical & Electronics Engineer
 
-## Post Script
-The full project report can be provided on request.
+Post Script
 
-
-
+A detailed technical and analytical project report is available upon request.
