@@ -14,11 +14,15 @@ The project demonstrates how predictive analytics and supervisory-style dashboar
 
 i.) To develop a next-day solar energy forecasting model using machine learning and meteorological data to support proactive monitoring.
 
+
 ii.) To design an analytical load scheduling approach that aligns controllable demand with forecasted solar availability.
+
 
 iii.) To improve solar PV self-consumption performance and reduce unplanned export to the grid.
 
+
 iv.) To provide a transparent, user-friendly dashboard to support operational oversight and decision-making.
+
 
 ## System Architecture
 
