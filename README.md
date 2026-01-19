@@ -55,8 +55,11 @@ A heuristic, rule-based scheduling algorithm aligns controllable loads with peri
 The scheduler enforces realistic operational constraints, including:
 
 i.) Daylight operating windows (06:00–18:00)
+
 ii.) Contiguous runtime requirements
+
 iii.) Device-specific scheduling rules (e.g., ovens completing operation before midday)
+
 
 The algorithm is intentionally designed for transparency, interpretability, and low computational complexity, supporting auditability and practical deployment.
 
