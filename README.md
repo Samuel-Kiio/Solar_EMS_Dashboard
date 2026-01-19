@@ -97,6 +97,7 @@ A complete, modular EMS pipeline suitable for extension and operational scaling.
 
 ## Example Load Scheduling Output
 <img width="986" height="391" alt="image" src="https://github.com/user-attachments/assets/a55008f0-c33b-4036-9703-45eebe407d28" />
+
 ## Potential Extensions
 
 Integration with smart meters, PLCs, or IoT-based switching systems for automated control
@@ -108,6 +109,7 @@ Incorporation of economic and tariff-based optimisation criteria
 Extension to multi-building or campus-scale microgrid supervision
 
 ## Repository Structure
+```bash
 ├── app.py
 ├── models/
 │   └── xgb_model.pkl
@@ -119,7 +121,7 @@ Extension to multi-building or campus-scale microgrid supervision
 │   └── load_data.csv
 ├── requirements.txt
 └── README.md
-
+```
 ## Author
 
 Samuel Kiio Kyalo
