@@ -8,7 +8,7 @@ import plotly.express as px
 from utils.scheduler import schedule_loads
 from utils.prediction_pipeline import predict_next_day_production
 
-# ------------------ CONFIG ------------------
+# Configuration
 
 st.set_page_config(page_title="Strathmore EMS Dashboard", layout="wide")
 st.title("🔋 Strathmore University Energy Management Dashboard")
@@ -17,24 +17,24 @@ LATITUDE = -1.2921
 LONGITUDE = 36.8219
 NBO_TZ = "Africa/Nairobi"
 
-# Compute "tomorrow" in Africa/Nairobi and show it on the dashboard
+# Computation of "tomorrow" in Africa/Nairobi to show on the dashboard
 now_nbo = pd.Timestamp.now(tz=NBO_TZ)
-day_start = now_nbo.normalize() + pd.Timedelta(days=1)   # 00:00 tomorrow (tz-aware)
-day_end   = day_start + pd.Timedelta(days=1)             # 00:00 next day (tz-aware)
+day_start = now_nbo.normalize() + pd.Timedelta(days=1)   
+day_end   = day_start + pd.Timedelta(days=1)             
 st.caption(f"Prediction date: **{day_start.strftime('%A, %d %B %Y')}** (Africa/Nairobi)")
 
-# ------------------ CACHE PREDICTIONS ------------------
+# Cache the Predictions
 
 @st.cache_data(ttl=60 * 15)  # cache for 15 minutes
 def _predict_cached(lat: float, lon: float) -> pd.DataFrame:
     """Call the pipeline and cache the DataFrame."""
     return predict_next_day_production(lat=lat, lon=lon)
 
-# ------------------ STEP 1 + 2: Forecast + Solar Prediction ------------------
+# Forecast + Solar Predictions
 
 irradiance_data = _predict_cached(LATITUDE, LONGITUDE)
 
-# --- Quick sanity metrics (computed in Nairobi time) ---
+# Quick sanity metrics (computed in Nairobi time)
 dfp = irradiance_data.sort_values("timestamp").copy()
 gti = pd.to_numeric(dfp["Global Tilted Irradiation"], errors="coerce").fillna(0)
 pv  = pd.to_numeric(dfp["predicted_solar_production"], errors="coerce").fillna(0)
@@ -48,8 +48,8 @@ def _to_nairobi(ts: pd.Timestamp) -> pd.Timestamp:
 peak_gti_ts = _to_nairobi(dfp.loc[gti.idxmax(), "timestamp"])
 peak_pv_ts  = _to_nairobi(dfp.loc[pv.idxmax(),  "timestamp"])
 
-total_pv_kwh = float(pv.sum()) / 1000.0                 # Wh/slot -> kWh
-daily_irr_kwh_m2 = float((gti * 0.5).sum() / 1000.0)    # W/m² * 0.5h -> Wh/m² -> kWh/m²
+total_pv_kwh = float(pv.sum()) / 1000.0                 # Wh/slot to kWh
+daily_irr_kwh_m2 = float((gti * 0.5).sum() / 1000.0)    # W/m² * 0.5h to Wh/m² then to kWh/m²
 
 m1, m2, m3, m4 = st.columns(4)
 m1.metric("Peak GTI time", peak_gti_ts.strftime("%I:%M %p"))
@@ -57,17 +57,17 @@ m2.metric("Peak PV time",  peak_pv_ts.strftime("%I:%M %p"))
 m3.metric("Total PV (kWh)", f"{total_pv_kwh:,.0f}")
 m4.metric("Daily Irr (kWh/m²)", f"{daily_irr_kwh_m2:,.2f}")
 
-# --- Build a plotting frame in *local* time (to align charts with metrics) ---
+# Building a plotting frame in *local* time to align charts with metrics
 plot_df = irradiance_data.copy()
-# Ensure tz-aware in Nairobi, then drop tz so Vega-Lite won't convert to UTC
+# Ensuring tz-aware in Nairobi, then dropping tz so Vega-Lite won't convert to UTC
 plot_df["ts_local"] = (
     pd.to_datetime(plot_df["timestamp"])
       .dt.tz_convert(NBO_TZ)     # Nairobi tz-aware
-      .dt.tz_localize(None)      # make naive to prevent UTC auto-shift in Streamlit chart
+      .dt.tz_localize(None)      # making naive to prevent UTC auto-shift in Streamlit chart
 )
 plot_df = plot_df.set_index("ts_local")
 
-# --- Charts row (now aligned with metrics) ---
+# The Charts row
 col1, col2 = st.columns(2)
 
 with col1:
@@ -80,7 +80,7 @@ with col2:
     st.line_chart(plot_df["predicted_solar_production"], use_container_width=True)
     st.caption("Series: Predicted PV output, units: Wh per 30-min slot — times shown in Africa/Nairobi")
 
-# ------------------ STEP 3: Build Optimal Load Schedule (timeline only) ------------------
+# Building an Optimal Load Schedule 
 
 load_data = pd.read_csv("data/load_data.csv", parse_dates=["timestamp"])
 scheduled_df = schedule_loads(load_data, irradiance_data)
@@ -91,7 +91,7 @@ def _build_timeline_from_schedule(df: pd.DataFrame, device_cols):
     Returns a frame with tz-aware Start/End in Africa/Nairobi plus naive local copies
     for plotting (prevents Plotly from auto-converting to UTC).
     """
-    # Ensure tz-aware in Nairobi
+    # Ensuring that tz-aware in Nairobi
     df = df.copy()
     df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True).dt.tz_convert(NBO_TZ)
     df = df.sort_values("timestamp").set_index("timestamp")
@@ -135,15 +135,15 @@ def _build_timeline_from_schedule(df: pd.DataFrame, device_cols):
     if timeline.empty:
         return timeline
 
-    # Restrict to tomorrow (safety)
+    # Restriction to tomorrow for safety
     mask = (timeline["Start"] >= day_start) & (timeline["Start"] < day_end)
     timeline = timeline.loc[mask].copy()
 
-    # ---- KEY FIX: build naive local copies so Plotly won't shift to UTC
+
     timeline["StartLocal"] = timeline["Start"].dt.tz_convert(NBO_TZ).dt.tz_localize(None)
     timeline["EndLocal"]   = timeline["End"].dt.tz_convert(NBO_TZ).dt.tz_localize(None)
 
-    # (Optional) include duration if you want it in hover
+
     timeline["Duration (min)"] = (timeline["End"] - timeline["Start"]).dt.total_seconds() / 60.0
 
     return timeline
@@ -164,7 +164,7 @@ st.subheader(f"🗓️ Optimal Load Schedule — {day_start.strftime('%d %b %Y')
 if timeline_df.empty:
     st.info("No controllable loads were scheduled for tomorrow.")
 else:
-    # Use the *local naive* columns so Plotly doesn't auto-convert timezones
+    # Using the local naive columns so Plotly doesn't auto-convert timezones
     fig_timeline = px.timeline(
         timeline_df,
         x_start="StartLocal",
@@ -175,15 +175,15 @@ else:
             "StartLocal": True,
             "EndLocal": True,
             "Duration (min)": True,
-            "Start": False,   # hide tz-aware versions from hover
+            "Start": False,   # hides tz-aware versions from hover
             "End": False,
         },
         title=f"Device Run Windows (Africa/Nairobi) — {day_start.strftime('%d %b %Y')}",
         template="plotly_dark"
     )
-    # Show devices from top to bottom
+    # Showing devices from top to bottom
     fig_timeline.update_yaxes(autorange="reversed")
-    # Fix x-axis to tomorrow (local, naive)
+    # Fixing x-axis to tomorrow (local, naive)
     x0 = day_start.tz_convert(NBO_TZ).tz_localize(None)
     x1 = day_end.tz_convert(NBO_TZ).tz_localize(None)
     fig_timeline.update_xaxes(
@@ -201,7 +201,8 @@ else:
     )
     st.plotly_chart(fig_timeline, use_container_width=True)
 
-# ------------------ STEP 4: Export scheduled loads ------------------
+# Export scheduled loads
 
 csv = scheduled_df.to_csv(index=False).encode("utf-8")
 st.download_button("⬇️ Download Load Schedule CSV", csv, file_name="scheduled_loads.csv", mime="text/csv")
+
